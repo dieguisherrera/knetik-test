@@ -14,6 +14,7 @@ I would also have dockerized the application and worked more on more advanced fi
 
 Thinking about scalability, I would have programmed thinking of millions of devices updating continuously live, looking for a good cache strategy. Having a central store like redux would be very robust in this cases, although today there's a new tool called ngrx for this cases. 
 
+If the locations represent coordinates, would be nice to show it in a map.
 
 #### **2. What was the most useful feature that was added to the latest version of your chosen language? Please include a snippet of code that shows how you've used it.**
 
