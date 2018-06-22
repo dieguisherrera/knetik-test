@@ -1,0 +1,170 @@
+<div class="list-container">
+  <form style="width: 100%" (ngSubmit)="filter($event)" novalidate>
+    <dx-select-box
+      width="30%"
+      style="float: left;"
+      applyValueMode="instantly"
+      placeholder="Select a column to filter"
+      [items]="columns" 
+      validationMessageMode="always"
+      [(value)]="selectedColumn">
+      <dx-validator>
+        <dxi-validation-rule 
+          type="required" 
+          message="Select a column please">
+        </dxi-validation-rule>
+      </dx-validator>
+    </dx-select-box>
+    <dx-text-box
+      style="float: left; margin-left: 25px;"
+      [(value)]="filterText"
+      *ngIf="selectedColumn && selectedColumn!='connected'"
+      valueChangeEvent="keyup"
+      validationMessageMode="always"
+      placeholder="Enter text to filter"
+      width="40%">
+      <dx-validator>
+        <dxi-validation-rule 
+          type="required" 
+          message="This is required">
+        </dxi-validation-rule>
+      </dx-validator>
+    </dx-text-box>
+    <mat-slide-toggle 
+      *ngIf="selectedColumn && selectedColumn=='connected'" 
+      style="float: left; margin-left: 25px;"
+      (change)="changeFilterConnected($event)"
+      [checked]="filterConnected">
+    </mat-slide-toggle>
+    <dx-button 
+      style= "margin-left: 25px; float: left;"
+      text="Filter"
+      type="success" 
+      [useSubmitBehavior]="true">
+    </dx-button>
+    <dx-button 
+      style= "float: right;"
+      text="Reset Data"
+      (onClick)="refreshMainGrid()"
+      type="normal" 
+      [useSubmitBehavior]="false">
+    </dx-button>
+  </form>
+  <dx-data-grid 
+    #mainGrid
+    style="clear:both; position: relative; top: 20px;"
+    id="gridContainer"
+    [cacheEnabled]="true"
+    [wordWrapEnabled]="true"
+    [rowAlternationEnabled]="true" 
+    [dataSource]="devicesList">
+    <dxi-column 
+      alignment="left"
+      dataField="location" 
+      caption="Location Name">
+    </dxi-column>
+    <dxi-column 
+      alignment="left"
+      dataField="parent_location" 
+      caption="Parent Location">
+    </dxi-column>
+    <dxi-column 
+      [width]="140"
+      dataField="connected" 
+      cellTemplate="connectedTemplate"
+      caption="Connection Status">
+    </dxi-column>
+    <dxi-column 
+      [width]="170"
+      dataField="updated_at" 
+      cellTemplate="dateColumnTemplate"
+      caption="Updated At">
+    </dxi-column>
+    <dxi-column 
+      [width]="220"
+      alignment="center"
+      dataField="signal"
+      cellTemplate="signalColumnTemplate"
+      caption="Signal">
+    </dxi-column>
+    <dxi-column 
+      [width]="50"
+      cellTemplate="moreInfoTemplate"
+      caption="">
+    </dxi-column>
+    <dxo-remote-operations
+        [sorting]="true"
+        [filtering]="true"
+        [paging]="true">
+    </dxo-remote-operations>
+    <dxo-paging [pageSize]="5"></dxo-paging>
+    <dxo-pager
+        [showPageSizeSelector]="true"
+        [allowedPageSizes]="[5, 10, 30, 50, 100]">
+    </dxo-pager>
+    <div *dxTemplate="let d of 'connectedTemplate'">
+      <mat-slide-toggle [checked]="d.value" style="pointer-events: none;"></mat-slide-toggle>
+    </div>
+    <div *dxTemplate="let d of 'signalColumnTemplate'">
+      <dx-circular-gauge 
+        id="gauge" 
+        [value]="d.value+100">
+        <dxo-scale
+          [startValue]="0"
+          [endValue]="100"
+          [tickInterval]="25">
+        </dxo-scale>
+        <dxo-size 
+          [height]="100"
+          [width]="200">
+        </dxo-size>
+        <dxo-value-indicator
+          type="textCloud"
+          color="#f05b41">
+        </dxo-value-indicator>
+        <dxo-geometry
+          [startAngle]="180"
+          [endAngle]="0">
+        </dxo-geometry>
+        <dxo-range-container>
+            <dxi-range [startValue]="0" [endValue]="25" color="#CE2029"></dxi-range>
+            <dxi-range [startValue]="25" [endValue]="75" color="#FFD700"></dxi-range>
+            <dxi-range [startValue]="75" [endValue]="100" color="#228B22"></dxi-range>
+        </dxo-range-container>
+      </dx-circular-gauge>
+    </div>
+    <div *dxTemplate="let d of 'moreInfoTemplate'">
+      <mat-icon id="info_{{d.data.id}}" color="primary">info</mat-icon>
+      <dx-tooltip 
+        style="position: absolute"
+        target="#info_{{d.data.id}}" 
+        position="top"
+        hideEvent="mouseleave"
+        showEvent="mouseenter">
+        <div *dxTemplate="let data = data of 'content'" class="row" style="text-align: left">
+            <div class="col-xs-12">
+              <strong>ID: </strong>{{ d.data.id }}
+            </div>
+            <div class="col-xs-12">
+              <strong>MAC: </strong>{{ d.data.mac_address }}
+            </div>
+        </div>
+      </dx-tooltip>
+    </div>
+    <div *dxTemplate="let d of 'dateColumnTemplate'">
+      <div id="date_{{d.data.id}}">
+        {{ d.value | amTimeAgo }}
+      </div>
+      <dx-tooltip 
+        style="position: absolute"
+        target="#date_{{d.data.id}}" 
+        position="top"
+        hideEvent="mouseleave"
+        showEvent="mouseenter">
+        <div *dxTemplate="let data = data of 'content'">
+            {{ d.value | date:'fullDate' }}
+        </div>
+      </dx-tooltip>
+    </div>
+  </dx-data-grid>
+</div>
