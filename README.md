@@ -8,7 +8,7 @@ This repository contains the recruitment test of Diego Herrera for the company K
 - Angular Material - https://material.angular.io/
 - Dev Extreme - https://js.devexpress.com/Documentation/Guide/Getting_Started/Widget_Basics_-_Angular/Create_and_Configure_a_Widget/
 
-Inside app-test/ follow this instructions:
+Inside app-test/ follow these instructions:
 
 ## Angular - CLI Generated Readme 
 
